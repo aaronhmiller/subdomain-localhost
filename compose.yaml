@@ -1,0 +1,56 @@
+services:
+  # Nginx reverse proxy - the only service exposing ports
+  nginx:
+    image: nginx:alpine
+    container_name: subdomain-router
+    ports:
+      - "80:80"      # All traffic goes through port 80
+      # - "443:443"  # Uncomment for HTTPS support
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+      - api
+      - admin
+    networks:
+      - app-network
+
+  # Web frontend service
+  web:
+    build: ./web
+    container_name: web-service
+    environment:
+      - SERVICE_NAME=web
+      - PORT=3000
+    expose:
+      - "3000"  # Only exposed internally, not to host
+    networks:
+      - app-network
+
+  # API backend service
+  api:
+    build: ./api
+    container_name: api-service
+    environment:
+      - SERVICE_NAME=api
+      - PORT=3000
+    expose:
+      - "3000"
+    networks:
+      - app-network
+
+  # Admin panel service
+  admin:
+    build: ./admin
+    container_name: admin-service
+    environment:
+      - SERVICE_NAME=admin
+      - PORT=3000
+    expose:
+      - "3000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
