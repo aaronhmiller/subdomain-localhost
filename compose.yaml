@@ -12,8 +12,6 @@ services:
       - web
       - api
       - admin
-    networks:
-      - app-network
 
   # Web frontend service
   web:
@@ -24,8 +22,6 @@ services:
       - PORT=3000
     expose:
       - "3000"  # Only exposed internally, not to host
-    networks:
-      - app-network
 
   # API backend service
   api:
@@ -36,8 +32,6 @@ services:
       - PORT=3000
     expose:
       - "3000"
-    networks:
-      - app-network
 
   # Admin panel service
   admin:
@@ -48,9 +42,3 @@ services:
       - PORT=3000
     expose:
       - "3000"
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
